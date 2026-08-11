@@ -3,6 +3,8 @@ import { app } from './config';
 
 export const storage: FirebaseStorage = getStorage(app);
 
+export { ref, uploadBytes, getDownloadURL };
+
 export const uploadQuestionImage = async (file: File, questionId: string): Promise<string> => {
   const fileExtension = file.name.split('.').pop() || 'png';
   const storageRef = ref(storage, `questions/${questionId}/${Date.now()}.${fileExtension}`);

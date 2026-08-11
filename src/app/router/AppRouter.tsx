@@ -7,6 +7,8 @@ import { ForgotPassword } from '../../pages/ForgotPassword';
 import { StudentDashboard } from '../../pages/StudentDashboard';
 import { TeacherDashboard } from '../../pages/TeacherDashboard';
 import { AdminDashboard } from '../../pages/AdminDashboard';
+import { AdminQuestionBank } from '../../pages/AdminQuestionBank';
+import { AdminSubjects } from '../../pages/AdminSubjects';
 import { Unauthorized } from '../../pages/Unauthorized';
 import { useAuth } from '../../features/auth/AuthContext';
 import { getDefaultRedirectPath } from '../../utils/roleGuards';
@@ -65,8 +67,8 @@ export const AppRouter: React.FC = () => {
             <Routes>
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="users" element={<AdminDashboard />} />
-              <Route path="questions" element={<AdminDashboard />} />
-              <Route path="subjects" element={<AdminDashboard />} />
+              <Route path="questions" element={<AdminQuestionBank />} />
+              <Route path="subjects" element={<AdminSubjects />} />
               <Route path="tests" element={<AdminDashboard />} />
               <Route path="settings" element={<AdminDashboard />} />
               <Route path="*" element={<Navigate to="dashboard" replace />} />

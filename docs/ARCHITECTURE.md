@@ -39,7 +39,8 @@ The MARK Exam Preparation Platform is built as a single-page application (SPA) u
 ## 3. Directory Layout & Layer Responsibilities
 - `src/app/`: Core app configuration, router definition (`AppRouter.tsx`), and global context providers.
 - `src/components/`: Reusable UI foundation (`Button`, `Input`, `Card`, `Dialog`, `Select`, `Badge`, `Tabs`, `Toast`, `Skeleton`, `EmptyState`, `ErrorState`).
-- `src/features/`: Domain-driven feature modules (Auth, Questions, Tests, Attempts, Results, Analytics).
+- `src/features/`: Domain-driven feature modules (Auth, Admin, Questions, Tests, Attempts, Results, Analytics).
 - `src/firebase/`: SDK initialization and typed helpers (`config.ts`, `auth.ts`, `firestore.ts`, `storage.ts`).
-- `src/types/`: Centralized TypeScript data models and domain enums.
+- `src/services/`: Client-side data services (`subjectService.ts`, `questionService.ts`, `csvImportService.ts`).
+- `src/types/`: Centralized TypeScript data models and domain enums (`user.ts`, `question.ts`, `test.ts`, `attempt.ts`, `subject.ts`, `csv.ts`).
 - `src/utils/`: Pure utility functions (Role authorization, test engine scoring, question validation).

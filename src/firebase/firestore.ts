@@ -6,6 +6,8 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  deleteDoc,
+  writeBatch,
   query,
   where,
   orderBy,
@@ -14,6 +16,7 @@ import {
   Firestore,
   CollectionReference,
   DocumentData,
+  QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import { app } from './config';
 import { UserProfile, Question, Test, TestAttempt, Subject, Chapter } from '../types';
@@ -35,14 +38,19 @@ export const collections = {
 };
 
 export {
+  collection,
   doc,
   getDoc,
   getDocs,
   setDoc,
   updateDoc,
+  deleteDoc,
+  writeBatch,
   query,
   where,
   orderBy,
   limit,
   startAfter,
 };
+
+export type { DocumentData, QueryDocumentSnapshot };

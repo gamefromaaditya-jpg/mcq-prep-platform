@@ -3,15 +3,24 @@ export interface Subject {
   name: string;
   code: string;
   description?: string;
-  iconName?: string;
+  displayOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
 }
 
 export interface Chapter {
   id: string;
   subjectId: string;
   name: string;
-  order: number;
+  code: string;
   description?: string;
+  displayOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
 }
 
 export interface Assignment {

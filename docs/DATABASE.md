@@ -2,23 +2,41 @@
 
 ## 1. Primary Collections Schema
 
-### `users/{userId}`
-Stores user account profiles and role permissions.
+### `subjects/{subjectId}`
+Stores curriculum subject taxonomies managed by Admins.
 ```json
 {
-  "id": "string (matches Auth UID)",
-  "email": "string",
-  "displayName": "string",
-  "role": "'admin' | 'teacher' | 'student'",
-  "photoURL": "string (optional)",
+  "id": "string",
+  "name": "string",
+  "code": "string",
+  "description": "string (optional)",
+  "displayOrder": 1,
+  "isActive": true,
   "createdAt": "ISO 8601 Timestamp",
   "updatedAt": "ISO 8601 Timestamp",
-  "isActive": "boolean"
+  "createdBy": "string (admin UID)"
+}
+```
+
+### `chapters/{chapterId}`
+Stores chapter topics linked to subjects.
+```json
+{
+  "id": "string",
+  "subjectId": "string",
+  "name": "string",
+  "code": "string",
+  "description": "string (optional)",
+  "displayOrder": 1,
+  "isActive": true,
+  "createdAt": "ISO 8601 Timestamp",
+  "updatedAt": "ISO 8601 Timestamp",
+  "createdBy": "string (admin UID)"
 }
 ```
 
 ### `questions/{questionId}`
-Master Question Bank collection managed by Admins.
+Master Question Bank collection managed exclusively by Admins.
 ```json
 {
   "id": "string",
@@ -37,64 +55,26 @@ Master Question Bank collection managed by Admins.
   "marks": 4,
   "negativeMarks": 1,
   "source": "string (optional e.g. JEE Main)",
+  "exam": "string (optional)",
   "year": 2024,
+  "tags": ["string"],
   "isPublished": true,
   "createdAt": "ISO 8601 Timestamp",
+  "updatedAt": "ISO 8601 Timestamp",
   "createdBy": "string (admin UID)"
-}
-```
-
-### `tests/{testId}`
-Full-length mock tests and chapter drills.
-```json
-{
-  "id": "string",
-  "title": "string",
-  "description": "string",
-  "instructions": ["string"],
-  "category": "'mock' | 'chapter_test' | 'dpp' | 'pyq' | 'custom'",
-  "subjectIds": ["string"],
-  "durationMinutes": 180,
-  "totalMarks": 300,
-  "totalQuestions": 75,
-  "questions": [
-    { "questionId": "q1", "section": "Physics", "order": 1, "marks": 4, "negativeMarks": 1 }
-  ],
-  "isPublished": true,
-  "createdAt": "ISO 8601 Timestamp"
-}
-```
-
-### `attempts/{attemptId}`
-Student test attempt logs.
-```json
-{
-  "id": "string",
-  "testId": "string",
-  "studentId": "string",
-  "startedAt": "ISO 8601 Timestamp",
-  "submittedAt": "ISO 8601 Timestamp (optional)",
-  "durationSeconds": 10800,
-  "remainingSeconds": 0,
-  "status": "'in_progress' | 'submitted' | 'auto_submitted'",
-  "answers": {
-    "q1": {
-      "questionId": "q1",
-      "userAnswer": "opt_1",
-      "state": "'ANSWERED' | 'MARKED_FOR_REVIEW' | ...",
-      "timeSpentSeconds": 120,
-      "isCorrect": true,
-      "marksAwarded": 4
-    }
-  },
-  "totalScore": 240,
-  "accuracyPercentage": 85.5
 }
 ```
 
 ---
 
-## 2. Firestore Spark Limits & Query Efficiency Strategy
-1. **Paging**: All question queries enforce `.limit(20)` with pagination cursors (`startAfter`).
+## 2. Answer Key Protection & Student Security Design
+- **Admin Authoring**: Admins have full access to `questions/{questionId}` including `correctAnswer` and `explanation`.
+- **Student Exam Delivery**: When a test is delivered to a student, student attempts fetch test question structures without embedding answer keys until test completion or auto-submission.
+- **Rules Isolation**: `firestore.rules` restricts write mutations on `questions`, `subjects`, and `chapters` exclusively to `request.auth` credentials matching `role == 'admin'`.
+
+---
+
+## 3. Firestore Spark Limits & Query Efficiency Strategy
+1. **Paging**: All question bank queries enforce `.limit(15)` with cursor pagination (`startAfter`).
 2. **Indexing**: Compound indexes defined in `firestore.indexes.json` prevent in-memory sorts.
-3. **Cache Policy**: Realtime `onSnapshot` listeners are avoided for listing views in favor of one-shot `getDocs` calls.
+3. **Batch Writes**: CSV bulk import writes in chunks of 400 documents using `writeBatch(db)` to respect the 500-write limit per batch.
