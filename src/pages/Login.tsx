@@ -49,6 +49,8 @@ export const Login: React.FC = () => {
         setError('Invalid email or password. Please check your credentials.');
       } else if (err.code === 'auth/too-many-requests') {
         setError('Access blocked due to multiple failed login attempts. Try again later.');
+      } else if (err.code === 'auth/firebase-app-check-token-is-invalid' || err.message?.includes('app-check')) {
+        setError('Firebase App Check is enforced on this project. In Firebase Console -> Build -> App Check -> Apps, uncheck "Enforce" for Identity Toolkit or register localhost as a debug token.');
       } else {
         setError(err.message || 'Failed to sign in. Please try again.');
       }

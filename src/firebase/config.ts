@@ -1,5 +1,10 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 
+// Enable Firebase App Check debug token in local development environment
+if (import.meta.env.DEV && typeof self !== 'undefined') {
+  (self as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+}
+
 export interface FirebaseEnvConfig {
   apiKey?: string;
   authDomain?: string;

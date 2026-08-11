@@ -66,6 +66,8 @@ export const Register: React.FC = () => {
         setError('Please enter a valid email address.');
       } else if (err.code === 'auth/weak-password') {
         setError('Password should be at least 6 characters.');
+      } else if (err.code === 'auth/firebase-app-check-token-is-invalid' || err.message?.includes('app-check')) {
+        setError('Firebase App Check is enforced on this project. In Firebase Console -> Build -> App Check -> Apps, uncheck "Enforce" for Identity Toolkit or register localhost as a debug token.');
       } else {
         setError(err.message || 'Registration failed. Please try again.');
       }
