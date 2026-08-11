@@ -1,0 +1,27 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isTeacherOrAdmin() {
+      return isAuthenticated() && (
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role in ['teacher', 'admin']
+      );
+    }
+
+    // Question images - Teachers and Admins can upload, all authenticated users can view
+    match /questions/{questionId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isTeacherOrAdmin();
+    }
+
+    // User profile images - User can manage their own profile picture
+    match /users/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+  }
+}
